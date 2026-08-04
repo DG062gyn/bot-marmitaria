@@ -30,11 +30,9 @@ Regras de atendimento:
 
 def responder_cliente(mensagem_usuario):
     try:
-        model = genai.GenerativeModel(
-            model_name="gemini-1.5-flah",
-            system_instruction=PROMPT_SISTEMA
-        )
-        response = model.generate_content(mensagem_usuario)
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        prompt_completo = f"{PROMPT_SISTEMA}\n\nCliente: {mensagem_usuario}"
+        response = model.generate_content(prompt_completo)
         return response.text
     except Exception as e:
         return f"Erro no Gemini: {e}"
