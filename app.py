@@ -12,13 +12,6 @@ EVOLUTION_INSTANCE_NAME = os.environ.get("EVOLUTION_INSTANCE_NAME", "marmitaria"
 
 app = Flask(__name__)
 
-
-# Configura o SDK do Gemini com a API Key
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
-
-app = Flask(__name__)
-
 PROMPT_SISTEMA = """
 Voce e o atendente virtual inteligente da WR Marmitaria.
 Seu tom e amigavel, rapido e muito prestativo.
