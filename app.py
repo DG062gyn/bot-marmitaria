@@ -39,7 +39,7 @@ def responder_cliente(mensagem_usuario):
     }
 
     try:
-        response = requests.post(URL, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload)
         dados = response.json()
 
         if "error" in dados:
