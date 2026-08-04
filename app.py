@@ -60,10 +60,14 @@ def enviar_mensagem_whatsapp(remote_jid, texto):
         "number": remote_jid,
         "text": texto
     }
-    try:
-        requests.post(url_envio, headers=headers, json=payload)
+        try:
+        response = requests.post(url_envio, headers=headers, json=payload)
+        # Mostra no log do Railway o que a Evolution respondeu
+        
+        print(f"Status Evolution: {response.status_code} - Resposta: {response.text}")
     except Exception as e:
         print(f"Erro ao enviar mensagem no WhatsApp: {e}")
+
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
