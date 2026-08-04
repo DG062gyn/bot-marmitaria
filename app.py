@@ -3,11 +3,15 @@ import requests
 from flask import Flask, request, jsonify
 import google.generativeai as genai
 
-# Configurações do Gemini
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+# Configurações de Variáveis de Ambiente
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 EVOLUTION_URL = os.environ.get("EVOLUTION_URL")
 EVOLUTION_API_KEY = os.environ.get("EVOLUTION_API_KEY")
 EVOLUTION_INSTANCE_NAME = os.environ.get("EVOLUTION_INSTANCE_NAME", "marmitaria")
+
+# Configura o SDK do Gemini com a API Key
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
 app = Flask(__name__)
 
@@ -30,19 +34,23 @@ Regras de atendimento:
 
 def responder_cliente(mensagem_usuario):
     try:
+        # Usa o modelo gemini-1.5-flash corrigido com System Instruction
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flah",
+            model_name="gemini-1.5-flash",
             system_instruction=PROMPT_SISTEMA
         )
         response = model.generate_content(mensagem_usuario)
         return response.text
     except Exception as e:
-        return f"Erro no Gemini: {e}"
-
-
+        print(f"Erro na chamada do Gemini: {e}")
+        return "Desculpe, tive uma instabilidade momentânea aqui no sistema! Pode repetir a sua mensagem, por favor?"
 
 def enviar_mensagem_whatsapp(remote_jid, texto):
     """Envia a resposta de volta para o cliente via Evolution API"""
+    if not EVOLUTION_URL or not EVOLUTION_API_KEY:
+        print("Erro: Variáveis da Evolution API não foram configuradas.")
+        return
+
     url_envio = f"{EVOLUTION_URL.strip('/')}/message/sendText/{EVOLUTION_INSTANCE_NAME}"
     headers = {
         "Content-Type": "application/json",
@@ -53,17 +61,14 @@ def enviar_mensagem_whatsapp(remote_jid, texto):
         "text": texto
     }
     try:
-        response = requests.post(url_envio, headers=headers, json=payload)
-        # Mostra no log do Railway o que a Evolution respondeu
-        
+        response = requests.post(url_envio, headers=headers, json=payload, timeout=10)
         print(f"Status Evolution: {response.status_code} - Resposta: {response.text}")
     except Exception as e:
         print(f"Erro ao enviar mensagem no WhatsApp: {e}")
 
-
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    data = request.get_json()
+    data = request.get_json() or {}
 
     try:
         # Verifica se é uma mensagem recebida do WhatsApp
