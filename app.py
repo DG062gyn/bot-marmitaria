@@ -32,7 +32,7 @@ Regras de atendimento:
 def responder_cliente(mensagem_usuario):
     try:
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-1.5-flash-8b",
             contents=f"{PROMPT_SISTEMA}\n\nCliente: {mensagem_usuario}"
         )
         return response.text
