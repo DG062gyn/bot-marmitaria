@@ -60,7 +60,7 @@ def enviar_mensagem_whatsapp(remote_jid, texto):
         "number": remote_jid,
         "text": texto
     }
-        try:
+    try:
         response = requests.post(url_envio, headers=headers, json=payload)
         # Mostra no log do Railway o que a Evolution respondeu
         
