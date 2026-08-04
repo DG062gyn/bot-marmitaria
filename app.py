@@ -51,7 +51,7 @@ def responder_cliente(mensagem_usuario):
 
 def enviar_mensagem_whatsapp(remote_jid, texto):
     """Envia a resposta de volta para o cliente via Evolution API"""
-    url_envio = f"{EVOLUTION_URL}/message/sendText/{INSTANCE_NAME}"
+    url_envio = f"{EVOLUTION_URL}/message/sendText/{EVOLUTION_INSTANCE_NAME}"
     headers = {
         "Content-Type": "application/json",
         "apikey": EVOLUTION_API_KEY
