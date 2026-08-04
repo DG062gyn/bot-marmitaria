@@ -3,11 +3,15 @@ import requests
 from flask import Flask, request, jsonify
 from google import genai
 
-# Configurações de Variáveis de Ambiente
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+# ✅ Forma correta da nova biblioteca (sem usar .configure):
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+
 EVOLUTION_URL = os.environ.get("EVOLUTION_URL")
 EVOLUTION_API_KEY = os.environ.get("EVOLUTION_API_KEY")
 EVOLUTION_INSTANCE_NAME = os.environ.get("EVOLUTION_INSTANCE_NAME", "marmitaria")
+
+app = Flask(__name__)
+
 
 # Configura o SDK do Gemini com a API Key
 if GEMINI_API_KEY:
