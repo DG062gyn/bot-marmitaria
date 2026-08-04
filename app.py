@@ -38,9 +38,8 @@ def responder_cliente(mensagem_usuario):
         )
         return response.text
     except Exception as e:
-        return f"Erro no Gemini: {e}"
-
-
+        # Se o Google estiver indisponível ou der erro, responde educadamente ao cliente
+        return "Desculpe, tive um instabilidade momentânea aqui no sistema! Pode repetir a sua mensagem, por favor?"
 
 
 def enviar_mensagem_whatsapp(remote_jid, texto):
