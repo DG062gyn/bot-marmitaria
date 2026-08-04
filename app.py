@@ -1,10 +1,10 @@
 import os
 import requests
 from flask import Flask, request, jsonify
-from google import genai
+from groq import Groq
 
-# Inicializa o cliente com a biblioteca oficial nova
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+# Inicializa o cliente gratuito da Groq
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 EVOLUTION_URL = os.environ.get("EVOLUTION_URL")
 EVOLUTION_API_KEY = os.environ.get("EVOLUTION_API_KEY")
@@ -31,17 +31,20 @@ Regras de atendimento:
 
 def responder_cliente(mensagem_usuario):
     try:
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=f"{PROMPT_SISTEMA}\n\nCliente: {mensagem_usuario}"
+        completion = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": PROMPT_SISTEMA},
+                {"role": "user", "content": mensagem_usuario}
+            ],
+            temperature=0.7
         )
-        return response.text
+        return completion.choices[0].message.content
     except Exception as e:
-        print(f"Erro no Gemini: {e}")
+        print(f"Erro na IA: {e}")
         return "Desculpe, tive uma instabilidade momentânea aqui no sistema! Pode repetir a sua mensagem, por favor?"
 
 def enviar_mensagem_whatsapp(remote_jid, texto):
-    """Envia a resposta de volta para o cliente via Evolution API"""
     if not EVOLUTION_URL or not EVOLUTION_API_KEY:
         print("Erro: Variáveis da Evolution API não foram configuradas.")
         return
