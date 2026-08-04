@@ -31,13 +31,15 @@ Regras de atendimento:
 
 def responder_cliente(mensagem_usuario):
     try:
+        # Usa o modelo ultra-rápido de 8b
         completion = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=[
                 {"role": "system", "content": PROMPT_SISTEMA},
                 {"role": "user", "content": mensagem_usuario}
             ],
-            temperature=0.7
+            temperature=0.7,
+            max_tokens=250
         )
         return completion.choices[0].message.content
     except Exception as e:
@@ -75,15 +77,18 @@ def webhook():
             key = message_data.get("key", {})
             
             from_me = key.get("fromMe", False)
+            # Responde apenas se NÃO for mensagem enviada pelo próprio bot
             if not from_me:
                 remote_jid = key.get("remoteJid")
                 
-                message = message_data.get("message", {})
-                texto_cliente = message.get("conversation") or message.get("extendedTextMessage", {}).get("text", "")
+                # Evita responder em grupos
+                if remote_jid and not remote_jid.endswith("@g.us"):
+                    message = message_data.get("message", {})
+                    texto_cliente = message.get("conversation") or message.get("extendedTextMessage", {}).get("text", "")
 
-                if texto_cliente:
-                    resposta_ia = responder_cliente(texto_cliente)
-                    enviar_mensagem_whatsapp(remote_jid, resposta_ia)
+                    if texto_cliente:
+                        resposta_ia = responder_cliente(texto_cliente)
+                        enviar_mensagem_whatsapp(remote_jid, resposta_ia)
 
     except Exception as e:
         print(f"Erro no processamento do Webhook: {e}")
