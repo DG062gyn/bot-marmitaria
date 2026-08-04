@@ -26,20 +26,7 @@ Regras de atendimento:
 1. Responda de forma direta e curta.
 2. Se o cliente pedir o cardapio, informe os tamanhos e opcoes.
 3. Se for fechar pedido, peca: tamanho, opcao de carne, endereco e forma de pagamento.
-"""
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    dados = request.get_json()
-    
-    # Extrai as chaves com segurança
-    data = dados.get('data', {})
-    key = data.get('key', {})
-    from_me = key.get('fromMe', False)
-    
-    # 🚨 SE A MENSAGEM FOI ENVIADA PELO PRÓPRIO BOT/VOCÊ, IGNORA!
-    if from_me:
-        return jsonify({"status": "ignored"}), 200
-        
+"""     
 
 def responder_cliente(mensagem_usuario):
     try:
