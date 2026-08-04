@@ -1,3 +1,18 @@
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    dados = request.get_json()
+    
+    # Extrai as chaves com segurança
+    data = dados.get('data', {})
+    key = data.get('key', {})
+    from_me = key.get('fromMe', False)
+    
+    # 🚨 SE A MENSAGEM FOI ENVIADA PELO PRÓPRIO BOT/VOCÊ, IGNORA!
+    if from_me:
+        return jsonify({"status": "ignored"}), 200
+
+    # ... Restante do seu código normal que extrai a mensagem e chama o Gemini ...
+
 import os
 import requests
 from flask import Flask, request, jsonify
