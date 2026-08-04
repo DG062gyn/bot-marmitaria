@@ -1,11 +1,9 @@
 import os
-from flask import Flask, request, jsonify
 import requests
-
-app = Flask(__name__)
+import google.generativeai as genai
 
 # Configurações do Gemini
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 EVOLUTION_URL = os.environ.get("EVOLUTION_URL")
 EVOLUTION_API_KEY = os.environ.get("EVOLUTION_API_KEY")
 EVOLUTION_INSTANCE_NAME = os.environ.get("EVOLUTION_INSTANCE_NAME", "marmitaria")
