@@ -2,4 +2,4 @@ flask
 requests
 gunicorn
 google-genai
-
+google-generativeai
