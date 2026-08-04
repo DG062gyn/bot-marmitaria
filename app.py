@@ -1,5 +1,6 @@
 import os
 import requests
+from flask import Flask, request, jsonify
 import google.generativeai as genai
 
 # Configurações do Gemini
@@ -7,6 +8,8 @@ genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 EVOLUTION_URL = os.environ.get("EVOLUTION_URL")
 EVOLUTION_API_KEY = os.environ.get("EVOLUTION_API_KEY")
 EVOLUTION_INSTANCE_NAME = os.environ.get("EVOLUTION_INSTANCE_NAME", "marmitaria")
+
+app = Flask(__name__)
 
 PROMPT_SISTEMA = """
 Voce e o atendente virtual inteligente da WR Marmitaria.
