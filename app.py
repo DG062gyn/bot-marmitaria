@@ -1,10 +1,12 @@
 import os
 import requests
 from flask import Flask, request, jsonify
-import google.generativeai as genai
+from google import genai
+
+app = Flask(__name__)
+client = genai.Client()
 
 # Configurações do Gemini
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 EVOLUTION_URL = os.environ.get("EVOLUTION_URL")
 EVOLUTION_API_KEY = os.environ.get("EVOLUTION_API_KEY")
 EVOLUTION_INSTANCE_NAME = os.environ.get("EVOLUTION_INSTANCE_NAME", "marmitaria")
@@ -30,12 +32,14 @@ Regras de atendimento:
 
 def responder_cliente(mensagem_usuario):
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        prompt_completo = f"{PROMPT_SISTEMA}\n\nCliente: {mensagem_usuario}"
-        response = model.generate_content(prompt_completo)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=f"{PROMPT_SISTEMA}\n\nCliente: {mensagem_usuario}"
+        )
         return response.text
     except Exception as e:
         return f"Erro no Gemini: {e}"
+
 
 
 
