@@ -8,7 +8,7 @@ app = Flask(__name__)
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 EVOLUTION_URL = os.environ.get("EVOLUTION_URL")
 EVOLUTION_API_KEY = os.environ.get("EVOLUTION_API_KEY")
-INSTANCE_NAME = "marmitaria"
+EVOLUTION_INSTANCE_NAME = os.environ.get("EVOLUTION_INSTANCE_NAME", "marmitaria")
 
 PROMPT_SISTEMA = """
 Voce e o atendente virtual inteligente da WR Marmitaria.
