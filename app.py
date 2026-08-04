@@ -5,12 +5,9 @@ import requests
 app = Flask(__name__)
 
 # Configurações do Gemini
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "SUA_CHAVE_AQUI")
-URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
-
-# Configurações da Evolution API
-EVOLUTION_URL = os.environ.get("EVOLUTION_URL", "https://evolution-api-production-8990.up.railway.app")
-EVOLUTION_API_KEY = os.environ.get("EVOLUTION_API_KEY", "SUA_API_KEY_DA_EVOLUTION")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+EVOLUTION_URL = os.environ.get("EVOLUTION_URL")
+EVOLUTION_API_KEY = os.environ.get("EVOLUTION_API_KEY")
 INSTANCE_NAME = "marmitaria"
 
 PROMPT_SISTEMA = """
