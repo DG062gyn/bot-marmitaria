@@ -31,16 +31,16 @@ Regras de atendimento:
 
 def responder_cliente(mensagem_usuario):
     try:
-        # Usa o modelo gemini-1.5-flash corrigido com System Instruction
-        model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash-latest",
-            system_instruction=PROMPT_SISTEMA
+        # Forma correta da biblioteca NOVA (google-genai):
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=f"{PROMPT_SISTEMA}\n\nCliente: {mensagem_usuario}"
         )
-        response = model.generate_content(mensagem_usuario)
         return response.text
     except Exception as e:
-        print(f"Erro na chamada do Gemini: {e}")
+        print(f"Erro no Gemini: {e}")
         return "Desculpe, tive uma instabilidade momentânea aqui no sistema! Pode repetir a sua mensagem, por favor?"
+
 
 def enviar_mensagem_whatsapp(remote_jid, texto):
     """Envia a resposta de volta para o cliente via Evolution API"""
