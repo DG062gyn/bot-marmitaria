@@ -31,7 +31,7 @@ Regras de atendimento:
 def responder_cliente(mensagem_usuario):
     try:
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
+            model_name="gemini-1.5-flash-latest",
             system_instruction=PROMPT_SISTEMA
         )
         response = model.generate_content(mensagem_usuario)
