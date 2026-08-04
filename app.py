@@ -3,7 +3,7 @@ import requests
 from flask import Flask, request, jsonify
 from google import genai
 
-# ✅ Forma correta da nova biblioteca (sem usar .configure):
+# Inicializa o cliente com a biblioteca oficial nova
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 EVOLUTION_URL = os.environ.get("EVOLUTION_URL")
@@ -31,7 +31,6 @@ Regras de atendimento:
 
 def responder_cliente(mensagem_usuario):
     try:
-        # Forma correta da biblioteca NOVA (google-genai):
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=f"{PROMPT_SISTEMA}\n\nCliente: {mensagem_usuario}"
@@ -40,7 +39,6 @@ def responder_cliente(mensagem_usuario):
     except Exception as e:
         print(f"Erro no Gemini: {e}")
         return "Desculpe, tive uma instabilidade momentânea aqui no sistema! Pode repetir a sua mensagem, por favor?"
-
 
 def enviar_mensagem_whatsapp(remote_jid, texto):
     """Envia a resposta de volta para o cliente via Evolution API"""
@@ -68,26 +66,20 @@ def webhook():
     data = request.get_json() or {}
 
     try:
-        # Verifica se é uma mensagem recebida do WhatsApp
         event = data.get("event")
         if event == "messages.upsert":
             message_data = data.get("data", {})
             key = message_data.get("key", {})
             
-            # Garante que não responde a mensagens enviadas pelo próprio bot
             from_me = key.get("fromMe", False)
             if not from_me:
                 remote_jid = key.get("remoteJid")
                 
-                # Extrai o texto enviado pelo cliente
                 message = message_data.get("message", {})
                 texto_cliente = message.get("conversation") or message.get("extendedTextMessage", {}).get("text", "")
 
                 if texto_cliente:
-                    # Gera a resposta via Gemini
                     resposta_ia = responder_cliente(texto_cliente)
-                    
-                    # Envia de volta para o WhatsApp do cliente
                     enviar_mensagem_whatsapp(remote_jid, resposta_ia)
 
     except Exception as e:
