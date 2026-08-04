@@ -26,29 +26,16 @@ Regras de atendimento:
 """
 
 def responder_cliente(mensagem_usuario):
-    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={os.environ.get('GEMINI_API_KEY')}"
-    headers = {"Content-Type": "application/json"}
-    
-    payload = {
-        "system_instruction": {
-            "parts": [{"text": PROMPT_SISTEMA}]
-        },
-        "contents": [{
-            "parts": [{"text": mensagem_usuario}]
-        }]
-    }
-
     try:
-        response = requests.post(url, headers=headers, json=payload)
-        dados = response.json()
-        
-        if "error" in dados:
-            return f"Erro na API: {dados['error'].get('message', '')}"
-            
-        return dados["candidates"][0]["content"]["parts"][0]["text"]
+        model = genai.GenerativeModel(
+            model_name="gemini-1.5-flash",
+            system_instruction=PROMPT_SISTEMA
+        )
+        response = model.generate_content(mensagem_usuario)
+        return response.text
     except Exception as e:
-        return f"Erro na requisicao: {e}"
+        return f"Erro no Gemini: {e}"
+
 
 
 def enviar_mensagem_whatsapp(remote_jid, texto):
