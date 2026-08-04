@@ -1,18 +1,3 @@
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    dados = request.get_json()
-    
-    # Extrai as chaves com segurança
-    data = dados.get('data', {})
-    key = data.get('key', {})
-    from_me = key.get('fromMe', False)
-    
-    # 🚨 SE A MENSAGEM FOI ENVIADA PELO PRÓPRIO BOT/VOCÊ, IGNORA!
-    if from_me:
-        return jsonify({"status": "ignored"}), 200
-
-    # ... Restante do seu código normal que extrai a mensagem e chama o Gemini ...
-
 import os
 import requests
 from flask import Flask, request, jsonify
@@ -25,8 +10,6 @@ client = genai.Client()
 EVOLUTION_URL = os.environ.get("EVOLUTION_URL")
 EVOLUTION_API_KEY = os.environ.get("EVOLUTION_API_KEY")
 EVOLUTION_INSTANCE_NAME = os.environ.get("EVOLUTION_INSTANCE_NAME", "marmitaria")
-
-app = Flask(__name__)
 
 PROMPT_SISTEMA = """
 Voce e o atendente virtual inteligente da WR Marmitaria.
@@ -44,6 +27,19 @@ Regras de atendimento:
 2. Se o cliente pedir o cardapio, informe os tamanhos e opcoes.
 3. Se for fechar pedido, peca: tamanho, opcao de carne, endereco e forma de pagamento.
 """
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    dados = request.get_json()
+    
+    # Extrai as chaves com segurança
+    data = dados.get('data', {})
+    key = data.get('key', {})
+    from_me = key.get('fromMe', False)
+    
+    # 🚨 SE A MENSAGEM FOI ENVIADA PELO PRÓPRIO BOT/VOCÊ, IGNORA!
+    if from_me:
+        return jsonify({"status": "ignored"}), 200
+        
 
 def responder_cliente(mensagem_usuario):
     try:
