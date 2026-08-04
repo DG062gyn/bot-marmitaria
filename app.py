@@ -28,7 +28,9 @@ Regras de atendimento:
 """
 
 def responder_cliente(mensagem_usuario):
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
     headers = {"Content-Type": "application/json"}
+    
     payload = {
         "system_instruction": {
             "parts": [{"text": PROMPT_SISTEMA}]
@@ -41,13 +43,14 @@ def responder_cliente(mensagem_usuario):
     try:
         response = requests.post(url, headers=headers, json=payload)
         dados = response.json()
-
+        
         if "error" in dados:
             return f"Erro na API: {dados['error'].get('message', '')}"
-
+            
         return dados["candidates"][0]["content"]["parts"][0]["text"]
     except Exception as e:
         return f"Erro na requisicao: {e}"
+
 
 def enviar_mensagem_whatsapp(remote_jid, texto):
     """Envia a resposta de volta para o cliente via Evolution API"""
