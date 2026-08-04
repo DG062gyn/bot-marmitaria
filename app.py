@@ -1,7 +1,7 @@
 import os
 import requests
 from flask import Flask, request, jsonify
-import google.generativeai as genai
+from google import genai
 
 # Configurações de Variáveis de Ambiente
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
