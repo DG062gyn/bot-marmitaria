@@ -1,15 +1,15 @@
 import os
 import requests
 from flask import Flask, request, jsonify
-from google import genai
-
-app = Flask(__name__)
-client = genai.Client()
+import google.generativeai as genai
 
 # Configurações do Gemini
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 EVOLUTION_URL = os.environ.get("EVOLUTION_URL")
 EVOLUTION_API_KEY = os.environ.get("EVOLUTION_API_KEY")
 EVOLUTION_INSTANCE_NAME = os.environ.get("EVOLUTION_INSTANCE_NAME", "marmitaria")
+
+app = Flask(__name__)
 
 PROMPT_SISTEMA = """
 Voce e o atendente virtual inteligente da WR Marmitaria.
@@ -26,18 +26,19 @@ Regras de atendimento:
 1. Responda de forma direta e curta.
 2. Se o cliente pedir o cardapio, informe os tamanhos e opcoes.
 3. Se for fechar pedido, peca: tamanho, opcao de carne, endereco e forma de pagamento.
-"""     
+"""
 
 def responder_cliente(mensagem_usuario):
     try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=f"{PROMPT_SISTEMA}\n\nCliente: {mensagem_usuario}"
+        model = genai.GenerativeModel(
+            model_name="gemini-1.5-flah",
+            system_instruction=PROMPT_SISTEMA
         )
+        response = model.generate_content(mensagem_usuario)
         return response.text
     except Exception as e:
-        # Se o Google estiver indisponível ou der erro, responde educadamente ao cliente
-        return "Desculpe, tive um instabilidade momentânea aqui no sistema! Pode repetir a sua mensagem, por favor?"
+        return f"Erro no Gemini: {e}"
+
 
 
 def enviar_mensagem_whatsapp(remote_jid, texto):
